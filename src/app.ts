@@ -8,6 +8,7 @@ import { makeConnection } from "./db/mongodb";
 import log from "./utils/logger";
 import authRoutes from "./routes/AuthRoutes";
 import protectedRoutes from "./routes/ProtectedRoutes";
+import userDetailsRoutes from "./routes/UserDetailsRoutes";
 
 makeConnection();
 
@@ -28,6 +29,7 @@ app.get("/", (req, res) => {
  * */
 app.use("/api/auth", authRoutes);
 app.use("/api/protected", protectedRoutes);
+app.use("/api/user-details", userDetailsRoutes);
 
 /**
  * Boots the app on PORT mentioned in .env

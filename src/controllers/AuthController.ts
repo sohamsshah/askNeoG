@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { RequestHandler, Response } from "express";
 import { UserCredentials } from "../models/UserCredentials";
+import { UserDetails } from "../models/UserDetails";
 import { SignInBody, SignUpBody } from "../validation/AuthValidation";
-import log from "../utils/logger";
 import { createToken } from "../utils/authUtils";
 import { AuthRequest } from "../types/RequestWithUser";
 /**
@@ -27,16 +27,14 @@ export const signUpHandler: RequestHandler<{}, {}, SignUpBody> = async (
   }
 
   try {
-    const user = new UserCredentials({
+    const NewUser = new UserCredentials({
       username,
-      firstName,
-      lastName,
       email,
       password,
     });
 
     try {
-      await user.save((err) => {
+      await NewUser.save((err) => {
         if (err) {
           return res.status(500).json({
             msg: "Something went wrong while registering you. Please try later or contact support@neogcamp.com",
@@ -44,26 +42,33 @@ export const signUpHandler: RequestHandler<{}, {}, SignUpBody> = async (
         }
       });
       const token = await createToken({
-        _id: user._id,
-        email: user.email,
+        _id: NewUser._id,
+        email: NewUser.email,
       });
 
       res.setHeader("Set-Cookie", [
         `token=${token}; Path=/;HttpOnly;SameSite=None;Secure=true;`,
       ]);
+      const NewUserDetails = new UserDetails({
+        _id: NewUser._id,
+        firstName: firstName,
+        lastName: lastName,
+      });
+
+      const savedUserDetails = await NewUserDetails.save();
+
       return res.status(200).json({
         msg: `Successfully signed in`,
         user: {
-          username: user.username,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          userId: user._id,
+          username: NewUser.username,
+          email: NewUser.email,
+          userId: NewUser._id,
+          userDetails: savedUserDetails,
           token,
         },
       });
     } catch (error) {
-      user.save();
+      NewUser.save();
 
       res.status(500).json({
         msg: "There was an error while sending verification email. Please click the resend button.",
@@ -84,8 +89,8 @@ export const signUpHandler: RequestHandler<{}, {}, SignUpBody> = async (
  * */
 
 export const signInHandler: RequestHandler<{}, {}, SignInBody> = async (
-  req,
-  res
+  req: AuthRequest,
+  res: Response
 ) => {
   const { email, password } = req.body;
   try {
@@ -114,8 +119,6 @@ export const signInHandler: RequestHandler<{}, {}, SignInBody> = async (
       email: user.email,
     });
 
-    log.info("TOKEN", token);
-
     res.setHeader("Set-Cookie", [
       `token=${token}; Path=/;HttpOnly;SameSite=None;Secure=true;`,
     ]);
@@ -125,8 +128,6 @@ export const signInHandler: RequestHandler<{}, {}, SignInBody> = async (
       msg: "Login Successful!",
       email,
       username: user.username,
-      firstName: user.firstName,
-      lastName: user.lastName,
       userId: user._id,
       token,
       code: "LOGIN_SUCCESS",
@@ -146,7 +147,10 @@ export const signInHandler: RequestHandler<{}, {}, SignInBody> = async (
  * this request doesn't need body
  * */
 
-export const logoutHandler: RequestHandler = async (req, res) => {
+export const logoutHandler: RequestHandler = async (
+  req: AuthRequest,
+  res: Response
+) => {
   res.clearCookie("token");
 
   res.status(200).json({
@@ -169,8 +173,6 @@ export const userInfoHandler = async (req: AuthRequest, res: Response) => {
     });
     res.status(200).json({
       email: foundUser?.email,
-      firstName: foundUser?.firstName,
-      lastName: foundUser?.lastName,
       userId: foundUser?._id,
     });
   } catch (error) {

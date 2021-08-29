@@ -4,8 +4,6 @@ import bcrypt from "bcrypt";
 export interface IUserCredentials {
   username: string;
   email: string;
-  firstName: string;
-  lastName: string;
   password: string;
   matchPasswords: (password: string) => Promise<boolean>;
 }
@@ -16,16 +14,6 @@ const userCredentialsSchema = new Schema<
   IUserCredentials
 >(
   {
-    firstName: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    lastName: {
-      type: String,
-      required: true,
-      trim: true,
-    },
     email: {
       type: String,
       required: true,
