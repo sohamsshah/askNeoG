@@ -7,8 +7,7 @@ export const signUpSchema = yup.object({
   email: yup
     .string()
     .email("Please make sure entered email is valid.")
-    .required("Email is a required field")
-    .matches(/^[a-z0-9+_.-]+@[a-z0-9.-]+$/),
+    .required("Email is a required field"),
   password: yup
     .string()
     .min(8, "Password must be atleast 8 characters long")
@@ -24,8 +23,7 @@ export const signInSchema = yup.object({
   email: yup
     .string()
     .required("Email is required to sign in.")
-    .email("Make sure email is valid.")
-    .matches(/^[a-z0-9+_.-]+@[a-z0-9.-]+$/),
+    .email("Make sure email is valid."),
   password: yup.string().required("Password is required to sign in."),
 });
 
