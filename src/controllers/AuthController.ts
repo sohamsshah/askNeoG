@@ -17,16 +17,16 @@ export const signUpHandler: RequestHandler<{}, {}, SignUpBody> = async (
 ) => {
   const { username, firstName, lastName, email, password } = req.body;
 
-  const isAlreadyRegistered = await UserCredentials.findOne({
-    email,
-  });
-  if (isAlreadyRegistered) {
-    return res.status(409).json({
-      msg: "An account with that email already exists. Please log in instead.",
-    });
-  }
-
   try {
+    const isAlreadyRegistered = await UserCredentials.findOne({
+      email,
+    });
+    if (isAlreadyRegistered) {
+      return res.status(409).json({
+        msg: "An account with that email already exists. Please log in instead.",
+      });
+    }
+
     const NewUser = new UserCredentials({
       username,
       email,
