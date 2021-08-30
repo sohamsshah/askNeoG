@@ -9,6 +9,7 @@ import log from "./utils/logger";
 import authRoutes from "./routes/AuthRoutes";
 import protectedRoutes from "./routes/ProtectedRoutes";
 import userDetailsRoutes from "./routes/UserDetailsRoutes";
+import questionsRoutes from "./routes/QuestionsRoutes";
 
 makeConnection();
 
@@ -30,6 +31,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/protected", protectedRoutes);
 app.use("/api/user-details", userDetailsRoutes);
+app.use("/api/questions", questionsRoutes);
 
 /**
  * Boots the app on PORT mentioned in .env

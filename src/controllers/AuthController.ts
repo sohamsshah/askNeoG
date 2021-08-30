@@ -9,7 +9,7 @@ import { AuthRequest } from "../types/RequestWithUser";
 /**
  * This handler handles user signups.
  * send POST Request at /api/auth/sign-up
- * body contains {username, firstName, lastName, email, password}
+ * body contains {firstName, lastName, email, password}
  * */
 export const signUpHandler: RequestHandler<{}, {}, SignUpBody> = async (
   req,
@@ -55,7 +55,6 @@ export const signUpHandler: RequestHandler<{}, {}, SignUpBody> = async (
       });
 
       const savedUserDetails = await NewUserDetails.save();
-
       return res.status(200).json({
         msg: `Successfully signed in`,
         user: {
@@ -66,10 +65,9 @@ export const signUpHandler: RequestHandler<{}, {}, SignUpBody> = async (
         },
       });
     } catch (error) {
-      NewUser.save();
-
       res.status(500).json({
-        msg: "There was an error while sending verification email. Please click the resend button.",
+        msg: "There was an error while signing you up. Please try again later",
+        error,
       });
     }
   } catch (error) {
@@ -129,7 +127,7 @@ export const signInHandler: RequestHandler<{}, {}, SignInBody> = async (
       token,
       code: "LOGIN_SUCCESS",
     });
-  } catch (error) {
+  } catch (error: any) {
     console.log(error.message, error);
     return res.status(500).json({
       msg: "Something went wrong while signing you in. Please contact support@neogcamp.com",
