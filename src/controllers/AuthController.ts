@@ -15,7 +15,7 @@ export const signUpHandler: RequestHandler<{}, {}, SignUpBody> = async (
   req,
   res
 ) => {
-  const { username, firstName, lastName, email, password } = req.body;
+  const { firstName, lastName, email, password } = req.body;
 
   try {
     const isAlreadyRegistered = await UserCredentials.findOne({
@@ -28,7 +28,6 @@ export const signUpHandler: RequestHandler<{}, {}, SignUpBody> = async (
     }
 
     const NewUser = new UserCredentials({
-      username,
       email,
       password,
     });
@@ -60,7 +59,6 @@ export const signUpHandler: RequestHandler<{}, {}, SignUpBody> = async (
       return res.status(200).json({
         msg: `Successfully signed in`,
         user: {
-          username: NewUser.username,
           email: NewUser.email,
           userId: NewUser._id,
           userDetails: savedUserDetails,
@@ -127,12 +125,11 @@ export const signInHandler: RequestHandler<{}, {}, SignInBody> = async (
     res.status(200).json({
       msg: "Login Successful!",
       email,
-      username: user.username,
       userId: user._id,
       token,
       code: "LOGIN_SUCCESS",
     });
-  } catch (error: any) {
+  } catch (error) {
     console.log(error.message, error);
     return res.status(500).json({
       msg: "Something went wrong while signing you in. Please contact support@neogcamp.com",

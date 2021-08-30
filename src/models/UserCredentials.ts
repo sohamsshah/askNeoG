@@ -2,7 +2,6 @@ import { Schema, model, Model } from "mongoose";
 import bcrypt from "bcrypt";
 
 export interface IUserCredentials {
-  username: string;
   email: string;
   password: string;
   matchPasswords: (password: string) => Promise<boolean>;
@@ -20,11 +19,7 @@ const userCredentialsSchema = new Schema<
       unique: true,
       lowercase: true,
     },
-    username: {
-      type: String,
-      required: true,
-      unique: true,
-    },
+
     password: {
       type: String,
       required: true,
