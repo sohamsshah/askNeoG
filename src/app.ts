@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
 dotenv.config()
-import express, { Application, Request, Response, NextFunction } from 'express'
+import express, { Application } from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import { corsOptions } from './config/corsOptions'
@@ -40,13 +40,10 @@ if (process.env.NODE_ENV === 'development') {
  process.on('unhandledRejection', (error: Error) => {
     log.error(`❎ unhandledRejection : ${error} \n ErrorStack : ${error.stack}`)
   })
-  
   /**
    * Any exception we forgot to catch will be logged here.
    * */
   process.on('uncaughtException', (error: Error) => {
     log.error(`❎ uncaughtException :  ${error.stack}`)
   })
-  
   export = app
-  
