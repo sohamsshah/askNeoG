@@ -4,7 +4,7 @@ import { IComment, commentSchema } from "./Comment";
 import { IVote, voteSchema } from "./Vote";
 
 export interface IQuestion {
-  authorId: ObjectId;
+  authorId: ObjectId | string;
   title: string;
   text: string;
   tags: Array<string>;

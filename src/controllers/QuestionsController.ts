@@ -13,7 +13,8 @@ export const getQuestionsHandler: RequestHandler = async (
   req: AuthRequest,
   res: Response
 ) => {
-  res.json({ msg: "inside getQuestionsHandler" });
+  const questions = await Question.find({});
+  res.json({ questions, msg: "Successfully fetched all Questions" });
 };
 
 /**
@@ -42,18 +43,47 @@ export const getQuestionHandler: RequestHandler = async (
 
 /**
  * This handler gets questions object from questionId
- * send GET Request at /api/questions/user/:userId
+ * send GET Request at /api/questions/author/:authorId
  * */
 
 export const getUserQuestionsHandler: RequestHandler = async (
   req: AuthRequest,
   res: Response
 ) => {
-  try {
-    const { userId } = req.params;
+  const { authorId } = req.params;
 
-    // TODO getUserQuestionsHandler
-    res.status(201).json({ msg: "Successfully found user" });
+  try {
+    const foundQuestions = await Question.find({
+      authorId: authorId,
+    });
+    res
+      .status(201)
+      .json({ questions: foundQuestions, msg: "Successfully found questions" });
+  } catch (error) {
+    res
+      .status(404)
+      .json({ error, msg: "Something went wrong. Please try again later" });
+  }
+};
+
+/**
+ * This handler gets questions object from tagName
+ * send GET Request at /api/questions/tags/:tagName
+ * */
+
+export const getTagQuestionsHandler: RequestHandler = async (
+  req: AuthRequest,
+  res: Response
+) => {
+  const { tagName } = req.params;
+
+  try {
+    const foundQuestions = await Question.find({
+      tags: tagName,
+    });
+    res
+      .status(201)
+      .json({ questions: foundQuestions, msg: "Successfully found questions" });
   } catch (error) {
     res
       .status(404)
@@ -72,9 +102,10 @@ export const postNewQuestionHandler: RequestHandler = async (
   res: Response
 ) => {
   const { title, text, tags } = req.body;
+  console.log(req.user._id);
   try {
     const NewQuestion = new Question({
-      _id: req.user._id,
+      authorId: req.user._id,
       title: title,
       text: text,
       tags: tags,
@@ -93,9 +124,29 @@ export const postNewQuestionHandler: RequestHandler = async (
   }
 };
 
+/**
+ * This handler deletes a question
+ * send DELETE Request at /api/questions/:questionId
+ * */
+
 export const deleteQuestionHandler: RequestHandler = async (
   req: AuthRequest,
   res: Response
 ) => {
-  res.json({ msg: "inside deleteQuestionsHandler" });
+  const { questionId } = req.params;
+  try {
+    const { deletedCount } = await Question.deleteOne({ _id: questionId });
+    if (deletedCount === 0) {
+      res.status(404).json({
+        msg: "The question you requested cannot be found",
+      });
+    }
+    res.status(200).json({
+      msg: "Successfully deleted the requested Question",
+    });
+  } catch (error) {
+    res
+      .status(404)
+      .json({ msg: "Something went wrong. Please try again later", error });
+  }
 };
