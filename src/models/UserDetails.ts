@@ -3,10 +3,12 @@ import { Schema, model, Model, Document } from "mongoose";
 export interface IUserDetails extends Document {
   firstName: string;
   lastName: string;
+  username: string;
   bio: string;
   githubUrl: string;
   twitterUrl: string;
   linkedinUrl: string;
+  portfolioUrl: string;
   profileImage: string;
 }
 
@@ -26,11 +28,19 @@ const userDetailsSchema = new Schema<
     required: true,
     trim: true,
   },
+  username: {
+    type: String,
+    unique: true,
+  },
   bio: {
     type: String,
     trim: true,
   },
   githubUrl: {
+    type: String,
+    trim: true,
+  },
+  portfolioUrl: {
     type: String,
     trim: true,
   },
