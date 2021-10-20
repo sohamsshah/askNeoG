@@ -7,7 +7,7 @@ import { corsOptions } from "./config/corsOptions";
 import { makeConnection } from "./db/mongodb";
 import log from "./utils/logger";
 import authRoutes from "./routes/AuthRoutes";
-import protectedRoutes from "./routes/ProtectedRoutes";
+import answerRoutes from "./routes/AnswerRoutes";
 import userDetailsRoutes from "./routes/UserDetailsRoutes";
 import questionsRoutes from "./routes/QuestionsRoutes";
 
@@ -29,7 +29,7 @@ app.get("/", (req, res) => {
  * Route Configuration
  * */
 app.use("/api/auth", authRoutes);
-app.use("/api/protected", protectedRoutes);
+app.use("/api/answers", answerRoutes);
 app.use("/api/user-details", userDetailsRoutes);
 app.use("/api/questions", questionsRoutes);
 
