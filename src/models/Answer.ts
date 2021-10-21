@@ -1,5 +1,4 @@
 import { Schema, model, Model, ObjectId } from "mongoose";
-import { string } from "yup/lib/locale";
 import { IComment, commentSchema } from "./Comment";
 import { IVote, voteSchema } from "./Vote";
 
