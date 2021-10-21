@@ -5,7 +5,7 @@ import { AuthRequest } from "../types/RequestWithUser";
 import { Question } from "../models/Question";
 
 /**
- * This handler gets questions object
+ * This handler gets all questions in DB
  * send GET Request at /api/questions/
  * */
 
@@ -13,8 +13,16 @@ export const getQuestionsHandler: RequestHandler = async (
   req: AuthRequest,
   res: Response
 ) => {
-  const questions = await Question.find({});
-  res.json({ questions, msg: "Successfully fetched all Questions" });
+  try {
+    const questions = await Question.find({});
+    res
+      .status(200)
+      .json({ questions, msg: "Successfully fetched all Questions" });
+  } catch (error) {
+    res
+      .status(404)
+      .json({ error, msg: "Something went wrong. Please try again later" });
+  }
 };
 
 /**
