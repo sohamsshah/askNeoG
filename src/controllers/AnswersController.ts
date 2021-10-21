@@ -45,10 +45,9 @@ export const postNewAnswerHandler: RequestHandler = async (
     });
 
     const savedNewAnswer = await NewAnswer.save();
-
     await Question.findOneAndUpdate(
       { _id: questionId },
-      { $addToSet: { answers: NewAnswer._id } }
+      { $addToSet: { answers: savedNewAnswer } }
     );
 
     res.status(201).json({
@@ -67,7 +66,7 @@ export const postNewAnswerHandler: RequestHandler = async (
  * send DELETE Request at /api/answers/:questionId/:answerId
  * */
 
-// WIP: Delete Answer
+// Improvement needed
 export const deleteAnswerHandler: RequestHandler = async (
   req: AuthRequest,
   res: Response
@@ -76,7 +75,7 @@ export const deleteAnswerHandler: RequestHandler = async (
   try {
     await Question.findOneAndUpdate(
       { _id: questionId },
-      { $pull: { answers: answerId } }
+      { $pull: { answers: { _id: answerId } } }
     );
     const { deletedCount } = await Answer.deleteOne({ _id: answerId });
     if (deletedCount === 0) {
